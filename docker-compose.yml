@@ -1,0 +1,21 @@
+name: OpenSpeedTest
+
+services:
+    speedtest:
+      image: openspeedtest/latest:v${SPEEDTEST_VERSION}
+      container_name: speedtest
+      volumes:
+        - /etc/timezone:/etc/timezone:ro
+      ports:
+        - "127.0.0.1:3001:3000"
+        - "127.0.0.1:3002:3001"
+      networks:
+        - nginx-proxy-manager_frontend
+      restart: unless-stopped
+      labels:
+        - wud.tag.include=^v\d+\.\d+\.\d+$$
+
+networks:
+  nginx-proxy-manager_frontend:
+    external: true
+    driver: bridge
