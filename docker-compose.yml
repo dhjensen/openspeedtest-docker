@@ -23,20 +23,21 @@ services:
         - traefik.http.middlewares.speedtestheader.headers.customResponseHeaders.Pragma=no-cache
         - traefik.http.middlewares.speedtestheader.headers.customResponseHeaders.Expires=0
         - traefik.http.middlewares.speedtestheader.headers.customResponseHeaders.Etag=""
-        - traefik.http.routers.speedtest-openspeedtest.middlewares=speedtestheader@docker
-        - traefik.http.routers.speedtest-openspeedtest-options.rule=Host(`speedtest.dhjensen.tech`) && Method(`OPTIONS`)
+        - traefik.http.middlewares.speedtestnocompress.compress=false
         - traefik.http.middlewares.speedtestheaderoptions.headers.accessControlAllowCredentials=true
         - traefik.http.middlewares.speedtestheaderoptions.headers.accesscontrolallowheaders=Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Mx-ReqToken,X-Requested-With
         - traefik.http.middlewares.speedtestheaderoptions.headers.accesscontrolalloworiginlist=* always
         - traefik.http.middlewares.speedtestheaderoptions.headers.accessControlAllowMethods=GET,POST,OPTIONS
-        - traefik.http.routers.speedtest-openspeedtest-regex.rule=Host(`speedtest.dhjensen.tech`) && PathRegexp(`^.+\.(?:css|cur|js|jpe?g|gif|htc|ico|png|html|xml|otf|ttf|eot|woff|woff2|svg)$`)
-        - traefik.http.routers.speedtest-openspeedtest-regex.observability.accesslogs=false
         - traefik.http.middlewares.speedtestheaderregex.headers.customResponseHeaders.Cache-Control=public, max-age=31536000
         - traefik.http.middlewares.speedtestcompress.compress=true
         - traefik.http.middlewares.speedtestcompress.compress.encodings=gzip
         - traefik.http.middlewares.speedtestcompress.compress.includedContentTypes=text/plain, text/css, application/json, application/x-javascript, text/xml, application/xml, application/xml+rss, text/javascript, application/javascript, image/svg+xml
-        - traefik.http.routers.speedtest-openspeedtest.middlewares=speedtestheader@docker
+        - traefik.http.services.speedtest-openspeedtest.loadbalancer.serverstransport=speedtest-openspeedtest-transport
+        - traefik.http.routers.speedtest-openspeedtest.middlewares=speedtestheader@docker,speedtestnocompress@docker
+        - traefik.http.routers.speedtest-openspeedtest-options.rule=Host(`speedtest.dhjensen.tech`) && Method(`OPTIONS`)
         - traefik.http.routers.speedtest-openspeedtest-options.middlewares=speedtestheaderoptions@docker
+        - traefik.http.routers.speedtest-openspeedtest-regex.rule=Host(`speedtest.dhjensen.tech`) && PathRegexp(`^.+\.(?:css|cur|js|jpe?g|gif|htc|ico|png|html|xml|otf|ttf|eot|woff|woff2|svg)$`)
+        - traefik.http.routers.speedtest-openspeedtest-regex.observability.accesslogs=false
         - traefik.http.routers.speedtest-openspeedtest-regex.middlewares=speedtestheaderregex@docker,speedtestcompress@docker
 
 networks:
